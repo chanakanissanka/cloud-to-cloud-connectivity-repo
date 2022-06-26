@@ -1,53 +1,45 @@
 
 variable "client_secret" {
-  default = "QUoUbm2-Lp7uu0Q~apTKz1vu8V3g2lR47b"
-
-
+  default = "add your SP details here"
 }
 
 variable "subscription_id" {
-  default = "e4188303-99fe-4b9d-aa01-b98619fed585"
-
-
+  default = "add your SP details here"
 }
 
 variable "client_id" {
-  default = "f4e275f3-7da2-4cc3-bf58-6ff4cc3a28d2"
-
-
+  default = "add your SP details here"
 }
 
 variable "tenant_id" {
-  default = "d6248ab4-ffcf-44fc-9ee4-cf93fbfe5c54"
-
-
+  default = "add your SP details here"
 }
 
 variable "local_networks" {
   type = list(object({ local_gw_name = string, local_gateway_address = string, local_address_space = list(string), shared_key = string }))
   default = [{
     local_address_space   = ["10.10.0.0/20"]
-    local_gateway_address = "87.54.43.24"
+    local_gateway_address = "87.54.43.24" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
     local_gw_name         = "To-AWS-1"
-    shared_key            = "sdfresx"
+    shared_key            = "fgdytdgdstsgshasgsgsashh" #Refferece to Key Vault is recommeded here. 
     },
     {
       local_address_space   = ["10.10.0.0/20"]
-      local_gateway_address = "87.54.43.25"
+      local_gateway_address = "87.54.43.25" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-2"
-      shared_key            = "sdfresx"
+      shared_key            = "fgdytdgdstsgshasgsgsashh"
     },
     {
       local_address_space   = ["10.10.0.0/20"]
-      local_gateway_address = "87.54.43.26"
+      local_gateway_address = "87.54.43.26" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-3"
-      shared_key            = "sdfresx"
+      shared_key            = "fgdytdgdstsgshasgsgsashh"
     },
     {
       local_address_space   = ["10.10.0.0/20"]
-      local_gateway_address = "87.54.43.27"
+      local_gateway_address = "87.54.43.27" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-4"
-      shared_key            = "sdfresx"
+      shared_key            = "fgdytdgdstsgshasgsgsashh"
   }]
 
 
@@ -108,3 +100,4 @@ variable "gateway_connection_protocol" {
   description = "The IKE protocol version to use. Possible values are IKEv1 and IKEv2. Defaults to IKEv2"
   default     = "IKEv2"
 }
+

@@ -7,14 +7,14 @@ resource "azurerm_virtual_network" "example" {
   name                = "test"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.130.0.0/16"]
 }
 
 resource "azurerm_subnet" "example" {
   name                 = "GatewaySubnet"
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.130.1.0/24"]
 }
 
 resource "azurerm_public_ip" "example" {
@@ -38,6 +38,10 @@ resource "azurerm_virtual_network_gateway" "example" {
   enable_bgp    = true
   sku           = var.vpn_gw_sku
 
+
+
+
+
   dynamic "ip_configuration" {
     for_each = azurerm_public_ip.example
     iterator = ip
@@ -52,7 +56,10 @@ resource "azurerm_virtual_network_gateway" "example" {
   }
 
 
+
+
 }
+
 
 
 #---------------------------
@@ -93,6 +100,7 @@ resource "azurerm_virtual_network_gateway_connection" "az-hub-onprem" {
   peer_virtual_network_gateway_id = var.gateway_connection_type == "Vnet2Vnet" ? var.peer_virtual_network_gateway_id : null
   shared_key                      = var.gateway_connection_type != "ExpressRoute" ? var.local_networks[count.index].shared_key : null
   connection_protocol             = var.gateway_connection_type == "IPSec" && var.vpn_gw_sku == ["VpnGw1", "VpnGw2", "VpnGw3", "VpnGw1AZ", "VpnGw2AZ", "VpnGw3AZ"] ? var.gateway_connection_protocol : null
+  enable_bgp                      = var.gateway_connection_type != "ExpressRoute" ? true : false
 
   dynamic "ipsec_policy" {
     for_each = var.local_networks_ipsec_policy != null ? [true] : []
