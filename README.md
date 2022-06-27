@@ -1,3 +1,8 @@
+
+![alt text](connectivity.jpeg)
+
+
+
 ## AWS Requirements
 
 | Name                                                    | Version |

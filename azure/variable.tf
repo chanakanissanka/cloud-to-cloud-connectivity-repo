@@ -24,8 +24,8 @@ variable "local_networks" {
     shared_key            = "fgdytdgdstsgshasgsgsashh" #Refferece to Key Vault is recommeded here. 
     },
     {
-      local_address_space   = ["10.10.0.0/20"]
-      local_gateway_address = "87.54.43.25" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
+      local_address_space   = ["10.10.0.0/20"] #
+      local_gateway_address = "87.54.43.25"    #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-2"
       shared_key            = "fgdytdgdstsgshasgsgsashh"
     },
