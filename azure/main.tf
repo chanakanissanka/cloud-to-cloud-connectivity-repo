@@ -90,7 +90,7 @@ resource "azurerm_local_network_gateway" "localgw" {
 #---------------------------------------
 resource "azurerm_virtual_network_gateway_connection" "az-hub-onprem" {
   count                           = var.gateway_connection_type == "ExpressRoute" ? 1 : length(var.local_networks)
-  name                            = var.gateway_connection_type == "ExpressRoute" ? "localgw-expressroute-connection" : "localgw-connection-${var.local_networks[count.index].local_gw_name}"
+  name                            = var.gateway_connection_type == "ExpressRoute" ? "localgw-expressroute-connection" : "lgw-connection-${var.local_networks[count.index].local_gw_name}"
   location                        = azurerm_resource_group.example.location
   resource_group_name             = azurerm_resource_group.example.name
   type                            = var.gateway_connection_type
