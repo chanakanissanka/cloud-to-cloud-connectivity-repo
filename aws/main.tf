@@ -7,24 +7,27 @@ resource "aws_vpn_gateway" "vpn_gateway" {
 }
 
 resource "aws_customer_gateway" "customer_gateway" {
-  count      = 2
+  for_each = toset({ for t in var.tunnel_config : t.public_ip_address_gw => t })
+
   bgp_asn    = 65515 #Azure virtual network gateway default ASN
-  ip_address = var.public_ip_address_gw[count.index]
+  ip_address = each.value.public_ip_address_gw
   type       = "ipsec.1"
 
   tags = {
-    Name = "aws-azure-customer-gateway-${count.index}"
+    Name      = "aws-azure-customer-gateway"
+    IpAddress = each.value
   }
 }
 
 resource "aws_vpn_connection" "main" {
-  count                 = 2
+  for_each = toset({ for t in var.tunnel_config : t.public_ip_address_gw => t })
+
   vpn_gateway_id        = aws_vpn_gateway.vpn_gateway.id
-  customer_gateway_id   = aws_customer_gateway.customer_gateway[count.index].id
+  customer_gateway_id   = aws_customer_gateway.customer_gateway[each.key].id
   type                  = "ipsec.1"
   static_routes_only    = false
-  tunnel1_inside_cidr   = var.tunnel1_inside_cidr[count.index]
-  tunnel2_inside_cidr   = var.tunnel2_inside_cidr[count.index]
-  tunnel1_preshared_key = var.tunnel1_preshared_key[count.index]
-  tunnel2_preshared_key = var.tunnel2_preshared_key[count.index]
+  tunnel1_inside_cidr   = each.value.tunnel1_inside_cidr
+  tunnel2_inside_cidr   = each.value.tunnel2_inside_cidr
+  tunnel1_preshared_key = each.value.tunnel1_preshared_key
+  tunnel2_preshared_key = each.value.tunnel2_preshared_key
 }
