@@ -16,59 +16,53 @@ variable "tenant_id" {
 }
 
 variable "local_networks" {
-  type = list(object({ local_gw_name = string, local_gateway_address = string, local_address_space = list(string), shared_key = string }))
-  default = [{
-    local_address_space   = ["10.10.0.0/20"]
-    local_gateway_address = "87.54.43.24" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
-    local_gw_name         = "To-AWS-1"
-    shared_key            = "fgdytdgdstsgshasgsgsashh" #Refferece to Key Vault is recommeded here. 
+  type = list(object({
+    local_gw_name         = string,
+    local_gateway_address = string,
+    local_address_space   = list(string),
+    shared_key            = string
+    asn_number            = number
+    peer_weight           = number
+    peering_address       = string
+  }))
+  default = [
+    {
+      local_address_space   = ["10.10.0.0/20"]
+      local_gateway_address = "87.54.43.24" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
+      local_gw_name         = "To-AWS-1"
+      shared_key            = "fgdytdgdstsgshasgsgsashh" #Refferece to Key Vault is recommeded here. 
+      asn_number            = 64512
+      peer_weight           = 0
+      peering_address       = "169.254.21.1"
     },
     {
       local_address_space   = ["10.10.0.0/20"] #
       local_gateway_address = "87.54.43.25"    #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-2"
       shared_key            = "fgdytdgdstsgshasgsgsashh"
+      asn_number            = 64512
+      peer_weight           = 0
+      peering_address       = "169.254.21.5"
     },
     {
       local_address_space   = ["10.10.0.0/20"]
       local_gateway_address = "87.54.43.26" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-3"
       shared_key            = "fgdytdgdstsgshasgsgsashh"
+      asn_number            = 64512
+      peer_weight           = 0
+      peering_address       = "169.254.21.29"
     },
     {
       local_address_space   = ["10.10.0.0/20"]
       local_gateway_address = "87.54.43.27" #This is just a fake value for demo purpose. you need to download from AWS VPN config and find the corresponding IP
       local_gw_name         = "To-AWS-4"
       shared_key            = "fgdytdgdstsgshasgsgsashh"
-  }]
-
-
-}
-
-
-variable "local_bgp_settings" {
-  type        = list(object({ asn_number = number, peering_address = string, peer_weight = number }))
-  description = "Local Network Gateway's BGP speaker settings"
-  default = [{
-    asn_number      = 64512
-    peer_weight     = 0
-    peering_address = "169.254.21.1"
-    },
-    {
-      asn_number      = 64512
-      peer_weight     = 0
-      peering_address = "169.254.21.5"
-    },
-    {
-      asn_number      = 64512
-      peer_weight     = 0
-      peering_address = "169.254.21.29"
-    },
-    {
-      asn_number      = 64512
-      peer_weight     = 0
-      peering_address = "169.254.21.33"
-  }]
+      asn_number            = 64512
+      peer_weight           = 0
+      peering_address       = "169.254.21.33"
+    }
+  ]
 }
 
 variable "gateway_connection_type" {
