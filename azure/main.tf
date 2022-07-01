@@ -1,35 +1,34 @@
-resource "azurerm_resource_group" "example" {
+resource "azurerm_resource_group" "this" {
   name     = "test"
   location = "Australia East"
 }
 
-resource "azurerm_virtual_network" "example" {
+resource "azurerm_virtual_network" "this" {
   name                = "test"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
   address_space       = ["10.130.0.0/16"]
 }
 
-resource "azurerm_subnet" "example" {
+resource "azurerm_subnet" "this" {
   name                 = "GatewaySubnet"
-  resource_group_name  = azurerm_resource_group.example.name
-  virtual_network_name = azurerm_virtual_network.example.name
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = ["10.130.1.0/24"]
 }
 
-resource "azurerm_public_ip" "example" {
+resource "azurerm_public_ip" "this" {
   count               = 2
   name                = "test_PIP-${count.index}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-
-  allocation_method = "Dynamic"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  allocation_method   = "Dynamic"
 }
 
-resource "azurerm_virtual_network_gateway" "example" {
+resource "azurerm_virtual_network_gateway" "this" {
   name                = "test"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
 
   type     = "Vpn"
   vpn_type = "RouteBased"
@@ -38,69 +37,52 @@ resource "azurerm_virtual_network_gateway" "example" {
   enable_bgp    = true
   sku           = var.vpn_gw_sku
 
-
-
-
-
   dynamic "ip_configuration" {
-    for_each = azurerm_public_ip.example
+    for_each = azurerm_public_ip.this
     iterator = ip
 
     content {
-
       name                          = "vnetGatewayConfig-${ip.key + 1}"
       public_ip_address_id          = ip.value.id
       private_ip_address_allocation = "Dynamic"
-      subnet_id                     = azurerm_subnet.example.id
+      subnet_id                     = azurerm_subnet.this.id
     }
   }
-
-
-
-
 }
-
-
 
 #---------------------------
 # Local Network Gateway
 #---------------------------
 resource "azurerm_local_network_gateway" "localgw" {
-  count               = length(var.local_networks)
-  name                = "localgw-${var.local_networks[count.index].local_gw_name}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  gateway_address     = var.local_networks[count.index].local_gateway_address
-  address_space       = var.local_networks[count.index].local_address_space
+  for_each = toset({ for t in var.local_networks : t.local_gw_name => t })
 
-  dynamic "bgp_settings" {
-    for_each = var.local_bgp_settings != null ? [true] : []
-    content {
-      asn                 = var.local_bgp_settings[count.index].asn_number
-      bgp_peering_address = var.local_bgp_settings[count.index].peering_address
-      peer_weight         = var.local_bgp_settings[count.index].peer_weight
-    }
+  name                = "localgw-${each.key}"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  gateway_address     = each.value.local_gateway_address
+  address_space       = each.value.local_address_space
+
+  bgp_settings {
+    asn                 = each.value.asn_number
+    bgp_peering_address = each.value.peering_address
+    peer_weight         = each.value.peer_weight
   }
-
-
 }
 
 #---------------------------------------
 # Virtual Network Gateway Connection
 #---------------------------------------
 resource "azurerm_virtual_network_gateway_connection" "az-hub-onprem" {
-  count                           = var.gateway_connection_type == "ExpressRoute" ? 1 : length(var.local_networks)
-  name                            = var.gateway_connection_type == "ExpressRoute" ? "localgw-expressroute-connection" : "lgw-connection-${var.local_networks[count.index].local_gw_name}"
-  location                        = azurerm_resource_group.example.location
-  resource_group_name             = azurerm_resource_group.example.name
-  type                            = var.gateway_connection_type
-  virtual_network_gateway_id      = azurerm_virtual_network_gateway.example.id
-  local_network_gateway_id        = var.gateway_connection_type != "ExpressRoute" ? azurerm_local_network_gateway.localgw[count.index].id : null
-  express_route_circuit_id        = var.gateway_connection_type == "ExpressRoute" ? var.express_route_circuit_id : null
-  peer_virtual_network_gateway_id = var.gateway_connection_type == "Vnet2Vnet" ? var.peer_virtual_network_gateway_id : null
-  shared_key                      = var.gateway_connection_type != "ExpressRoute" ? var.local_networks[count.index].shared_key : null
-  connection_protocol             = var.gateway_connection_type == "IPSec" && var.vpn_gw_sku == ["VpnGw1", "VpnGw2", "VpnGw3", "VpnGw1AZ", "VpnGw2AZ", "VpnGw3AZ"] ? var.gateway_connection_protocol : null
-  enable_bgp                      = var.gateway_connection_type != "ExpressRoute" ? true : false
+  for_each = toset({ for t in var.local_networks : t.local_gw_name => t })
+
+  name                       = "lgw-connection-${each.value.local_gw_name}"
+  location                   = azurerm_resource_group.this.location
+  resource_group_name        = azurerm_resource_group.this.name
+  type                       = var.gateway_connection_type
+  virtual_network_gateway_id = azurerm_virtual_network_gateway.this.id
+  local_network_gateway_id   = azurerm_local_network_gateway.localgw[each.key].id
+  connection_protocol        = var.gateway_connection_protocol
+  enable_bgp                 = true
 
   dynamic "ipsec_policy" {
     for_each = var.local_networks_ipsec_policy != null ? [true] : []
@@ -115,5 +97,4 @@ resource "azurerm_virtual_network_gateway_connection" "az-hub-onprem" {
       sa_lifetime      = var.local_networks_ipsec_policy.sa_lifetime
     }
   }
-
 }
