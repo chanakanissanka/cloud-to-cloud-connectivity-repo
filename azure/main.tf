@@ -1,20 +1,20 @@
 resource "azurerm_resource_group" "this" {
-  name     = "test"
+  name     = "cloud-test"
   location = "Australia East"
 }
 
 resource "azurerm_virtual_network" "this" {
-  name                = "test"
+  name                = "cloud-test"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  address_space       = ["10.130.0.0/16"]
+  address_space       = ["10.200.0.0/16"]
 }
 
 resource "azurerm_subnet" "this" {
   name                 = "GatewaySubnet"
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["10.130.1.0/24"]
+  address_prefixes     = ["10.200.1.0/24"]
 }
 
 resource "azurerm_public_ip" "this" {
