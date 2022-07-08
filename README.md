@@ -1,7 +1,9 @@
+### This is a sample repo to set up HA VPN connection between AWS and Azure
+#### Do NOT use this in any ENVIRONMENT(PRD/Dev/Tst/Uat)  without making required changes to sensitive data
 
 ![alt text](connectivity.jpeg)
 
-### This is a sample repo to set up HA VPN connection between AWS and Azure
+
 
 ## AWS Requirements
 

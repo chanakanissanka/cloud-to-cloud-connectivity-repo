@@ -31,3 +31,8 @@ override.tf.json
 
 azure/.terraform.lock.hcl
 aws/.terraform.lock.hcl
+
+
+.pre-commit-config.yaml
+.vale.ini
+styles/*
