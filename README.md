@@ -1,7 +1,7 @@
 
 ![alt text](connectivity.jpeg)
 
-
+### This is a sample repo to set up HA VPN connection between AWS and Azure
 
 ## AWS Requirements
 
