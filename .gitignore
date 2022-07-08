@@ -34,5 +34,5 @@ aws/.terraform.lock.hcl
 
 
 .pre-commit-config.yaml
-.vale.int
+.vale.ini
 styles/*
