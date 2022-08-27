@@ -54,18 +54,22 @@ resource "azurerm_virtual_network_gateway" "this" {
 # Local Network Gateway
 #---------------------------
 resource "azurerm_local_network_gateway" "localgw" {
-  for_each = toset({ for t in var.local_networks : t.local_gw_name => t })
+  for_each = { for t in var.local_networks : t.local_gw_name => t }
 
-  name                = "localgw-${each.key}"
+
+  name                = each.value.local_gw_name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
   gateway_address     = each.value.local_gateway_address
   address_space       = each.value.local_address_space
 
+
   bgp_settings {
+
     asn                 = each.value.asn_number
     bgp_peering_address = each.value.peering_address
     peer_weight         = each.value.peer_weight
+
   }
 }
 
@@ -73,7 +77,7 @@ resource "azurerm_local_network_gateway" "localgw" {
 # Virtual Network Gateway Connection
 #---------------------------------------
 resource "azurerm_virtual_network_gateway_connection" "az-hub-onprem" {
-  for_each = toset({ for t in var.local_networks : t.local_gw_name => t })
+  for_each = { for t in var.local_networks : t.local_gw_name => t }
 
   name                       = "lgw-connection-${each.value.local_gw_name}"
   location                   = azurerm_resource_group.this.location

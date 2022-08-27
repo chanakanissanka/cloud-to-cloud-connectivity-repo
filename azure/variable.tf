@@ -1,25 +1,25 @@
 
 variable "client_secret" {
-  default = "add your SP details here"
+  default = "Enter your details"
 }
 
 variable "subscription_id" {
-  default = "add your SP details here"
+  default = "Enter your details"
 }
 
 variable "client_id" {
-  default = "add your SP details here"
+  default = "Enter your details"
 }
 
 variable "tenant_id" {
-  default = "add your SP details here"
+  default = "Enter your details"
 }
 
 variable "local_networks" {
   type = list(object({
-    local_gw_name         = string,
-    local_gateway_address = string,
-    local_address_space   = list(string),
+    local_address_space   = list(string)
+    local_gateway_address = string
+    local_gw_name         = string
     shared_key            = string
     asn_number            = number
     peer_weight           = number

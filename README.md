@@ -97,3 +97,11 @@ No modules.
 | Name                                                                                                   | Description |
 | ------------------------------------------------------------------------------------------------------ | ----------- |
 | <a name="output_public_ip_address_gw"></a> [public\_ip\_address\_gw](#output\_public\_ip\_address\_gw) | n/a         |
+
+
+
+
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
