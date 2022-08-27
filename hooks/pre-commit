@@ -2,13 +2,11 @@
 
 echo 'pre-commit hook starting'
 
-pre-commit run -
+pre-commit run -a
 
-for d in azure/*; do
-  if terraform-docs md "$d" > "$d/README.md"; then
-    git add "./$d/README.md"
-  fi
-done
+
+
+
 
 FLIP=$(($(($RANDOM%10))%2))
 
