@@ -4,13 +4,13 @@ echo 'pre-commit hook starting'
 
 pre-commit run -a
 
-# FLIP=$(($(($RANDOM%10))%2))
+FLIP=$(($(($RANDOM%10))%2))
 
-# if [ $FLIP -eq 1 ]
-# then
-#   echo 'Your commit is ok'
-#   exit 0
-# else
-#   echo ' Would you mind fixing the errors, Thanks'
-#   exit 1
-# fi
+if [ $FLIP -eq 1 ]
+then
+  echo 'Your commit is ok'
+  exit 0
+else
+  echo ' Would you mind fixing the errors, Thanks'
+  exit 1
+fi
