@@ -2,7 +2,7 @@
 
 echo 'pre-commit hook starting'
 
-#pre-commit run -a
+pre-commit run -a
 
 
 
