@@ -1,14 +1,14 @@
 
 variable "client_secret" {
-  default = "Enter your details"
+  default = "Enter your secret details"
 }
 
 variable "subscription_id" {
-  default = "Enter your details"
+  default = "Enter your sub details details"
 }
 
 variable "client_id" {
-  default = "Enter your details"
+  default = "Enter your client details"
 }
 
 variable "tenant_id" {
