@@ -21,7 +21,8 @@ resource "aws_customer_gateway" "customer_gateway" {
 }
 
 resource "aws_vpn_connection" "main" {
-  for_each = toset({ for t in var.tunnel_config : t.public_ip_address_gw => t })
+  #for_each = toset({ for t in var.tunnel_config : t.public_ip_address_gw => t })
+  for_each = var.tunnel_config
 
   vpn_gateway_id        = aws_vpn_gateway.vpn_gateway.id
   customer_gateway_id   = aws_customer_gateway.customer_gateway[each.key].id
