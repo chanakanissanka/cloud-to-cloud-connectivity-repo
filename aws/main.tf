@@ -7,7 +7,6 @@ resource "aws_vpn_gateway" "vpn_gateway" {
 }
 
 resource "aws_customer_gateway" "customer_gateway" {
-  #for_each = toset({ for t in var.tunnel_config : t.public_ip_address_gw => t })
   for_each = var.tunnel_config
 
   bgp_asn    = 65515 #Azure virtual network gateway default ASN
@@ -16,12 +15,11 @@ resource "aws_customer_gateway" "customer_gateway" {
 
   tags = {
     Name      = "aws-azure-customer-gateway"
-    IpAddress = each.value
+    IpAddress = each.value.public_ip_address_gw
   }
 }
 
 resource "aws_vpn_connection" "main" {
-  #for_each = toset({ for t in var.tunnel_config : t.public_ip_address_gw => t })
   for_each = var.tunnel_config
 
   vpn_gateway_id        = aws_vpn_gateway.vpn_gateway.id
